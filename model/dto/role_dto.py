@@ -1,18 +1,7 @@
 from datetime import datetime
-from pydantic import BaseModel
 
-class CreateRoleRequestBody (BaseModel):
-    name: str
-    description: str
 
-class RoleResponseBody (BaseModel):
-    id: str
-    name: str
-    description: str
-    created_at: datetime
-    updated_at: datetime
-
-class Role:
+class RoleDTO:
     name: str
     description: str
     created_at: datetime

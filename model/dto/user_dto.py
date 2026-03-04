@@ -1,29 +1,8 @@
-from datetime import datetime, timezone
 from typing import List
+from datetime import datetime
 
-from pydantic import BaseModel
 
-class CreateUserRequestBody (BaseModel):
-    name: str
-    email: str
-    password: str
-    roles: str
-
-class UpdateUserRequestBody (BaseModel):
-    name: str
-    password: str
-    roles: str
-
-class UserResponseBody (BaseModel):
-    id: str
-    name: str
-    email: str
-    hashed_password: str
-    roles: List[str]
-    created_at: datetime
-    updated_at: datetime
-
-class User:
+class UserDTO:
     name: str
     email: str
     hashed_password: str
