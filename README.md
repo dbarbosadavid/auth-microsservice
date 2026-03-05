@@ -66,12 +66,10 @@ CLIENT_X509_CERT_URL=
 UNIVERSE_DOMAIN=
 ```
 
----
-
 ### 3. With DOCKER
 ```bash
 docker build -t auth-microsservice .
-docker run -p --name auth-microsservice-container 8000:8000 auth-microsservice
+docker run -p 8000:8000 --name auth-microsservice-container auth-microsservice
 ```
 
 ### 3. With no DOCKER (Virtual Environment)
