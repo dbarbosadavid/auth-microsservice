@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import HTTPException
 
 from model.schemas.roles import RoleCreateRequestBody, RoleResponseBody
-from model.dto.role_dto import RoleDTO
+from model.domain.role_dto import RoleDTO
 from repository.role_repsitory import RoleRepository
 
 class RolesService:

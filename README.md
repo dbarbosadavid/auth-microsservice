@@ -40,11 +40,41 @@ inspired by Clean Architecture principles.
 ### 1. Clone
 
 ```bash
-git clone https://github.com/seu-usuario/auth-microservice.git
+git clone https://github.com/dbarbosadavid/auth-microservice.git
 cd auth-microservice
 ```
 
-### 2. Virtual Environment
+### 2. Environment Variables
+
+`.env` file in root directory:
+
+```env
+SECRET_KEY=super_secret_key
+
+# firebase credentials
+DATABASE_URL=
+TYPE=
+PROJECT_ID=
+PRIVATE_KEY_ID=
+PRIVATE_KEY=
+CLIENT_EMAIL=
+CLIENT_ID=
+AUTH_URI=
+TOKEN_URI=
+AUTH_PROVIDER_X509_CERT_URL=
+CLIENT_X509_CERT_URL=
+UNIVERSE_DOMAIN=
+```
+
+---
+
+### 3. With DOCKER
+```bash
+docker build -t auth-microsservice .
+docker run -p --name auth-microsservice-container 8000:8000 auth-microsservice
+```
+
+### 3. With no DOCKER (Virtual Environment)
 
 ```bash
 python -m venv venv
@@ -62,33 +92,10 @@ Linux/macOS:
 source venv/bin/activate
 ```
 
-### 3. Install dependencies
+### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
-```
-
----
-
-## Environment Variables
-
-`.env` file:
-
-```env
-DATABASE_URL=
-SECRET_KEY=super_secret_key
-
-TYPE=
-PROJECT_ID=
-PRIVATE_KEY_ID=
-PRIVATE_KEY=
-CLIENT_EMAIL=
-CLIENT_ID=
-AUTH_URI=
-TOKEN_URI=
-AUTH_PROVIDER_X509_CERT_URL=
-CLIENT_X509_CERT_URL=
-UNIVERSE_DOMAIN=
 ```
 
 ---

@@ -3,8 +3,8 @@ from datetime import datetime
 from fastapi import HTTPException
 from http import HTTPStatus
 from config.crypt import hash_password
-from model.schemas.user import UserUpdateRequestBody, UserCreateRequestBody, UserResponseBody
-from model.dto.user_dto import UserDTO
+from model.schemas.user import UserCreateRequestBody, UserAdminUpdateRequestBody, UserAdminCreateRequestBody, UserResponseBody
+from model.domain.user_dto import UserDTO
 from email_validator import validate_email, EmailNotValidError
 
 from repository.user_repository import UserRepository
@@ -15,7 +15,7 @@ class UserService:
         self.repo = UserRepository()
         self.roles_service = RolesService()
 
-    def create_user(self, user: UserCreateRequestBody):
+    def create_user(self, user: UserAdminCreateRequestBody):
         name, email, hashed_password, roles = self.validate_user_data(user)
 
         timestamp = datetime.now()
@@ -42,7 +42,7 @@ class UserService:
             updated_at=new_user.updated_at)
 
 
-    def update_user(self, id: str, user_request: UserUpdateRequestBody):
+    def update_user(self, id: str, user_request: UserAdminUpdateRequestBody):
         user_exist = self.get_user_by_id(id)
 
         name, email, hashed_password, roles = self.validate_user_data(user_request)
@@ -120,7 +120,7 @@ class UserService:
 
 
 
-    def validate_user_data(self, user: UserCreateRequestBody | UserUpdateRequestBody):
+    def validate_user_data(self, user: UserAdminCreateRequestBody | UserAdminUpdateRequestBody | UserCreateRequestBody):
         if len(user.name) < 3:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
@@ -131,11 +131,14 @@ class UserService:
                 status_code=HTTPStatus.BAD_REQUEST,
                 detail="A senha deve ter pelo menos 8 caracteres")
         
-        roles = user.roles.upper()
-        roles = roles.split(',')
+        if hasattr(user, 'roles'):
+            roles = user.roles.upper()
+            roles = roles.split(',')
+        else: 
+            roles = ['USER']
 
         valid_roles = self.roles_service.get_all_roles()
-        valid_roles_names = [role['name'] for role in valid_roles]
+        valid_roles_names = [role.name for role in valid_roles]
         valid_roles_id = []
 
         for role in roles:
@@ -145,7 +148,7 @@ class UserService:
                     detail=f"Role '{role}' é inválida. As roles válidas são: {', '.join(valid_roles_names)}")
             else:
                 idx = valid_roles_names.index(role) 
-                valid_roles_id.append(valid_roles[idx]['id'])
+                valid_roles_id.append(valid_roles[idx].id)
 
         if hasattr(user, 'email'):
             new_email = self.validate_new_email(user.email)

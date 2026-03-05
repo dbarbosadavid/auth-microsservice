@@ -4,8 +4,8 @@ from services.token_service import TokenService
 from services.user_service import UserService
 from fastapi import APIRouter, Depends
 
-from config.dependencies import get_admin_user
-from model.schemas.user import UserCreateRequestBody, UserUpdateRequestBody, UserResponseBody
+from config.dependencies import get_admin_user, get_current_user
+from model.schemas.user import UserAdminCreateRequestBody, UserCreateRequestBody, UserCreateRequestBody, UserAdminUpdateRequestBody, UserResponseBody, UserUpdateRequestBody
 
 user = APIRouter(prefix='/user', tags=['Users'])
 user_service = UserService()
@@ -24,13 +24,32 @@ def list_users():
            status_code=201,
            response_description='Usuário criado com sucesso',
            response_model=UserResponseBody,
-           dependencies=[Depends(get_admin_user)],
            responses={
-               403: {"description": "Acesso negado: Requer permissão de administrador"}
+               409: {"description": "E-mail indisponível"}
             })
 def register_user(request: UserCreateRequestBody):
     return user_service.create_user(request)
+
+@user.post('/register/admin', 
+           status_code=201,
+           response_description='Usuário criado com sucesso',
+           response_model=UserResponseBody,
+           dependencies=[Depends(get_admin_user)],
+           responses={
+               403: {"description": "Acesso negado: Requer permissão de administrador"},
+               409: {"description": "E-mail indisponível"}
+            })
+def register_user(request: UserAdminCreateRequestBody):
+    return user_service.create_user(request)
     
+@user.put('/update',
+          status_code=201,
+          response_description='Usuário atualizado com sucesso',
+          response_model=UserResponseBody,
+          dependencies=[Depends(get_current_user)])
+def update_user(request: UserUpdateRequestBody, user = Depends(get_current_user)):
+    return user_service.update_user(user.id, request)
+
 @user.put('/update/{id}',
           status_code=201,
           response_description='Usuário atualizado com sucesso',
@@ -39,8 +58,15 @@ def register_user(request: UserCreateRequestBody):
           responses={
                403: {"description": "Acesso negado: Requer permissão de administrador"}
             })
-def update_user(id: str, request: UserUpdateRequestBody):
+def update_user(id: str, request: UserAdminUpdateRequestBody):
     return user_service.update_user(id, request)
+
+@user.delete('/delete', 
+             status_code=204, 
+             response_description='Usuário deletado com sucesso',
+             dependencies=[Depends(get_current_user)])
+def delete_user(user = Depends(get_current_user)):
+    return user_service.delete_user(user.id)
 
 @user.delete('/delete/{id}', 
              status_code=204, 
