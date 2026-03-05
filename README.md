@@ -319,9 +319,12 @@ root/
 ### Users (Admin)
 
 * `GET /user/list`
-* `POST /user/register`
-* `PUT /user/update/{id}`
-* `DELETE /user/delete/{id}`
+* `POST /user/register` -> for user register itself
+* `POST /user/register/admin` -> for admin register an user
+* `PUT /user/update` -> update current user
+* `PUT /user/update/{id}` -> admin update any user by id
+* `DELETE /user/delete` -> delete current user
+* `DELETE /user/delete/{id}` -> admin delete any user by id
 * `GET /user/get/{id}`
 
 ### Roles (Admin)
